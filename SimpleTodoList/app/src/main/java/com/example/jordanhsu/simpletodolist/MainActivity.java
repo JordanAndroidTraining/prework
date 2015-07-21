@@ -9,30 +9,27 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
-
-import static com.example.jordanhsu.simpletodolist.R.id.todoInput;
-
+import java.util.List;
 
 public class MainActivity extends ActionBarActivity {
 
     public static final String MAIN_ACTIVITY = "mainActivity";
 
-    private ArrayList<String> todoArray;
-    private ArrayAdapter<String> todoAdapter;
+    private ArrayList<String> todoList;
+    private TodoListAdapter todoAdapter;
 //
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ListView todoItem = (ListView) findViewById(R.id.todoItem);
-
-        todoArray = new ArrayList<String>();
-        todoAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,todoArray);
-        todoItem.setAdapter(todoAdapter);
+        todoList = new ArrayList<String>();
+        todoAdapter = new TodoListAdapter(this, 0, todoList);
+        ListView listView = (ListView) findViewById(R.id.itemList);
+        listView.setAdapter(todoAdapter);
     }
 
     @Override
@@ -59,12 +56,21 @@ public class MainActivity extends ActionBarActivity {
 
     public void addBtnClickHandler(View view) {
         EditText et = (EditText) findViewById(R.id.todoInput);
+        String inputText = et.getText().toString();
 
+        // Clear input
+        et.setText("");
 
-        Log.d(MAIN_ACTIVITY, et.getText().toString());
+        Log.d(MAIN_ACTIVITY, inputText);
 
-        todoArray.add(et.getText().toString());
-        todoAdapter.notifyDataSetChanged();
-
+        if (inputText.isEmpty()){
+            Log.d(MAIN_ACTIVITY, "Nothing input");
+            // show hint if input is empty
+            Toast.makeText(this,"Please give me something !", Toast.LENGTH_LONG).show();
+        }else {
+           // append to view
+            todoList.add(inputText);
+            todoAdapter.notifyDataSetChanged();
+        }
     }
 }
