@@ -2,15 +2,14 @@ package com.example.jordanhsu.simpletodolist;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
-
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by jordanhsu on 7/21/15.
@@ -40,13 +39,11 @@ public class TodoListAdapter extends ArrayAdapter<String> {
         delBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
+                Log.d("xxx", "positon: " + String.valueOf(position));
                 todoList.remove(position);
                 notifyDataSetChanged();
             }
         });
-
         return view;
     }
-
-
 }

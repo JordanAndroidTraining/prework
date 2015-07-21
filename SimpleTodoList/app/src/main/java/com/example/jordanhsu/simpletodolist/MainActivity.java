@@ -1,35 +1,47 @@
 package com.example.jordanhsu.simpletodolist;
 
+import android.content.Context;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends ActionBarActivity {
 
     public static final String MAIN_ACTIVITY = "mainActivity";
+    public static final String TODO_LIST_FILE_NAME = "todoListData2";
 
     private ArrayList<String> todoList;
     private TodoListAdapter todoAdapter;
-//
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        todoList = new ArrayList<String>();
+//        todoList = loadTodoList();
+        todoList = loadTodoList();
         todoAdapter = new TodoListAdapter(this, 0, todoList);
-        ListView listView = (ListView) findViewById(R.id.itemList);
+        final ListView listView = (ListView) findViewById(R.id.itemList);
         listView.setAdapter(todoAdapter);
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        saveTodoList(todoList);
     }
 
     @Override
@@ -70,7 +82,37 @@ public class MainActivity extends ActionBarActivity {
         }else {
            // append to view
             todoList.add(inputText);
+            saveTodoList(todoList);
             todoAdapter.notifyDataSetChanged();
         }
     }
+
+    public void saveTodoList(ArrayList data){
+        try {
+            FileOutputStream fos = openFileOutput(TODO_LIST_FILE_NAME, Context.MODE_PRIVATE);
+            ObjectOutputStream of = new ObjectOutputStream(fos);
+            of.writeObject(data);
+            of.flush();
+            of.close();
+            fos.close();
+        }
+        catch (Exception e) {
+            Log.e("InternalStorage", e.getMessage());
+        }
+    }
+
+    public ArrayList<String> loadTodoList(){
+        ArrayList<String> todoData = new ArrayList<String>();
+        FileInputStream fis;
+        try {
+            fis = openFileInput(TODO_LIST_FILE_NAME);
+            ObjectInputStream oi = new ObjectInputStream(fis);
+            todoData = (ArrayList<String>) oi.readObject();
+            oi.close();
+        } catch (Exception e) {
+            Log.e("InternalStorage", e.getMessage());
+        }
+        return todoData;
+    }
+
 }
