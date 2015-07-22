@@ -1,4 +1,4 @@
-## Android Prework - A Simple Todo List
+## Android Training Prework - A Simple Todo List
 
 ### Support features
 * list todo list
