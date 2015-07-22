@@ -1,6 +1,8 @@
 package com.example.jordanhsu.simpletodolist;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -91,6 +93,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         todoList.remove(position);
         todoAdapter.notifyDataSetChanged();
         saveTodoList(todoList);
+        Toast.makeText(this,"Remove item successfully!", Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -102,15 +105,14 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 break;
             case R.id.deleteRowBtn:
                 int clickedPosition = listView.getPositionForView(v);
-                Log.d(MAIN_ACTIVITY,"Del Btn Clicked: " + clickedPosition);
-                removeEventHandler(clickedPosition);
+                showConfirmDialog(clickedPosition);
                 break;
         }
     }
 
     @Override
     public boolean onItemLongClick(AdapterView<?> parent, View v, int position, long id) {
-        removeEventHandler(position);
+        showConfirmDialog(position);
         return true;
     }
 
@@ -142,4 +144,16 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         return todoData;
     }
 
+    public void showConfirmDialog(final int position){
+        AlertDialog.Builder bld  = new AlertDialog.Builder(this);
+        bld.setMessage("Remove this todo item?")
+            .setTitle("Confirm")
+            .setNegativeButton("No", null)
+            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    removeEventHandler(position);
+                }
+            }).show();
+    }
 }
