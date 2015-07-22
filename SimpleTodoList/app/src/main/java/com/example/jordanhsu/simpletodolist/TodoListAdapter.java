@@ -25,7 +25,6 @@ public class TodoListAdapter extends ArrayAdapter<String> {
         this.todoList = todoList;
     }
 
-
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
@@ -34,16 +33,9 @@ public class TodoListAdapter extends ArrayAdapter<String> {
         TextView tv = (TextView) view.findViewById(R.id.todoContent);
         tv.setText(todoList.get(position));
 
-        // Handle remove btn
+        // add event listener for remove btn
         Button delBtn = (Button) view.findViewById(R.id.deleteRowBtn);
-        delBtn.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                Log.d("xxx", "positon: " + String.valueOf(position));
-                todoList.remove(position);
-                notifyDataSetChanged();
-            }
-        });
+        delBtn.setOnClickListener((View.OnClickListener) context);
         return view;
     }
 }

@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -17,31 +18,27 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity implements View.OnClickListener {
 
     public static final String MAIN_ACTIVITY = "mainActivity";
     public static final String TODO_LIST_FILE_NAME = "todoListData2";
 
     private ArrayList<String> todoList;
     private TodoListAdapter todoAdapter;
+    private ListView listView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        todoList = loadTodoList();
         todoList = loadTodoList();
         todoAdapter = new TodoListAdapter(this, 0, todoList);
-        final ListView listView = (ListView) findViewById(R.id.itemList);
+        listView = (ListView) findViewById(R.id.itemList);
         listView.setAdapter(todoAdapter);
 
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        saveTodoList(todoList);
+        Button addBtn = (Button) findViewById(R.id.addBtn);
+        addBtn.setOnClickListener(this);
     }
 
     @Override
@@ -66,7 +63,7 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void addBtnClickHandler(View view) {
+    public void addBtnClickHandler() {
         EditText et = (EditText) findViewById(R.id.todoInput);
         String inputText = et.getText().toString();
 
@@ -84,6 +81,29 @@ public class MainActivity extends ActionBarActivity {
             todoList.add(inputText);
             saveTodoList(todoList);
             todoAdapter.notifyDataSetChanged();
+        }
+    }
+
+    public void removeBtnClickHandler(int position){
+        todoList.remove(position);
+        todoAdapter.notifyDataSetChanged();
+        saveTodoList(todoList);
+    }
+
+    @Override
+    public void onClick(View v) {
+        Log.d(MAIN_ACTIVITY,"CLICKED!! " + v.getId());
+        int clickedResId = v.getId();
+
+        switch (clickedResId){
+            case R.id.addBtn:
+                addBtnClickHandler();
+                break;
+            case R.id.deleteRowBtn:
+                int clickedPosition = listView.getPositionForView(v);
+                Log.d(MAIN_ACTIVITY,"Del Btn Clicked: " + clickedPosition);
+                removeBtnClickHandler(clickedPosition);
+                break;
         }
     }
 
