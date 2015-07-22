@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -18,7 +19,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
-public class MainActivity extends ActionBarActivity implements View.OnClickListener {
+public class MainActivity extends ActionBarActivity implements View.OnClickListener, AdapterView.OnItemLongClickListener{
 
     public static final String MAIN_ACTIVITY = "mainActivity";
     public static final String TODO_LIST_FILE_NAME = "todoListData2";
@@ -36,6 +37,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         todoAdapter = new TodoListAdapter(this, 0, todoList);
         listView = (ListView) findViewById(R.id.itemList);
         listView.setAdapter(todoAdapter);
+
+        listView.setOnItemLongClickListener(this);
 
         Button addBtn = (Button) findViewById(R.id.addBtn);
         addBtn.setOnClickListener(this);
@@ -63,7 +66,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         return super.onOptionsItemSelected(item);
     }
 
-    public void addBtnClickHandler() {
+    public void addEventHandler() {
         EditText et = (EditText) findViewById(R.id.todoInput);
         String inputText = et.getText().toString();
 
@@ -84,7 +87,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         }
     }
 
-    public void removeBtnClickHandler(int position){
+    public void removeEventHandler(int position){
         todoList.remove(position);
         todoAdapter.notifyDataSetChanged();
         saveTodoList(todoList);
@@ -92,19 +95,23 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        Log.d(MAIN_ACTIVITY,"CLICKED!! " + v.getId());
         int clickedResId = v.getId();
-
         switch (clickedResId){
             case R.id.addBtn:
-                addBtnClickHandler();
+                addEventHandler();
                 break;
             case R.id.deleteRowBtn:
                 int clickedPosition = listView.getPositionForView(v);
                 Log.d(MAIN_ACTIVITY,"Del Btn Clicked: " + clickedPosition);
-                removeBtnClickHandler(clickedPosition);
+                removeEventHandler(clickedPosition);
                 break;
         }
+    }
+
+    @Override
+    public boolean onItemLongClick(AdapterView<?> parent, View v, int position, long id) {
+        removeEventHandler(position);
+        return true;
     }
 
     public void saveTodoList(ArrayList data){

@@ -3,5 +3,6 @@
 ### Support features
 * list todo list
 * add todo item
-* remove todo item
-* [BONUS] use internal storage to store data
+* remove todo item (longClick or click single btn)
+* use internal storage to store data
+* show Toast hint if try to add emty todo
